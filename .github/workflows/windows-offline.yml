@@ -1,0 +1,39 @@
+name: Windows offline tests
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-offline:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.16.0
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm run build
+      - run: node --test dist/tests/integration/windows-acl.test.js
+      - run: node --test dist/tests/integration/windows-junction.test.js
+      - run: node --test dist/tests/integration/multi-client.test.js
+        env:
+          CPB_TEST_TRACE: '1'
+      - run: node --test dist/tests/integration/host-exit.test.js
+      - run: node --test dist/tests/integration/active-shutdown.test.js
+      - run: npm test
+        env:
+          CPB_TEST_TRACE: '1'
+      - shell: pwsh
+        run: ./scripts/windows-package-smoke.ps1
