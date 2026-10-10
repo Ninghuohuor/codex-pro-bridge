@@ -13,13 +13,15 @@ codex mcp add codex-pro-bridge --env CODEX_PRO_BRIDGE_BROWSER=agent -- "$(comman
 CODEX_PRO_BRIDGE_BROWSER=agent node dist/src/cli/index.js doctor
 ```
 
-希望 Codex 在新任务中自动完成本地 Bridge 工具调用时，可在个人 `~/.codex/config.toml` 的 `[mcp_servers.codex-pro-bridge]` 中设置 `default_tools_approval_mode = "approve"`，并在个人 `~/.codex/AGENTS.md` 中写明需要主动咨询 Pro 的任务类型。此设置只影响 Codex 对 Bridge MCP 工具的宿主批准；Bridge 自身的网页外发授权与防重复发送约束仍生效。
+**每次先选择是否使用：**Codex 判断重大方案、复杂诊断或关键审查适合网页协作时，先说明咨询原因、拟发送的问题和上下文，以及额外等待和网页额度使用，再提供“Codex 直接处理（默认）”和“使用 Codex Pro Bridge”两个选项。用户明确同意后才绑定项目、准备快照、打开 ChatGPT 网页并创建任务；选择直接处理时本次任务不再反复询问。未回复不算同意。用户已明确要求本次使用 Bridge，或批准了有范围和次数的协作流程时，无需在该范围内重复询问。新的咨询和范围外的网页追问仍需选择。暂停使用的本机或项目继续遵守暂停规则。
 
-若用户明确选择**纯文字自动发送**，可在个人配置的 `[mcp_servers.codex-pro-bridge.env]` 下加入 `CODEX_PRO_BRIDGE_AUTO_TEXT = "1"`，随后重启 Bridge 运行器。Bridge 为项目内和无项目、且没有文件上下文的问题自动建立与完整消息哈希绑定的一次发送授权，不设每小时自动授权次数上限；敏感内容扫描、账户/选项核对、发送账本和异常暂停仍执行。最多同时有五条等待任务，队列满时须等已有任务结束。项目文件及其上下文包不会因此自动发送。未启用时继续逐条批准或使用有限会话授权。
+希望用户选择使用后，Codex 能顺畅完成本地 Bridge 工具调用时，可在个人 `~/.codex/config.toml` 的 `[mcp_servers.codex-pro-bridge]` 中设置 `default_tools_approval_mode = "approve"`。此设置只影响宿主对 MCP 工具的批准，不代替用户本次是否使用 Bridge 的选择；Bridge 自身的网页外发授权与防重复发送约束仍生效。
+
+若用户明确选择**纯文字自动发送**，可在个人配置的 `[mcp_servers.codex-pro-bridge.env]` 下加入 `CODEX_PRO_BRIDGE_AUTO_TEXT = "1"`，随后重启 Bridge 运行器。此选项简化用户已选择使用 Bridge 后的内容授权，不跳过使用选择。Bridge 为项目内和无项目、且没有文件上下文的问题自动建立与完整消息哈希绑定的一次发送授权，不设每小时自动授权次数上限；敏感内容扫描、账户/选项核对、发送账本和异常暂停仍执行。最多同时有五条等待任务，队列满时须等已有任务结束。项目文件及其上下文包不会因此自动发送。未启用时继续逐条批准或使用有限会话授权。
 
 全局 MCP 一次安装后会出现在本机新开的 Codex 任务中。有项目的任务首次需要网页高档协作时，调用 `codex_pro_bind_project` 自动注册当前项目的准确根目录；无项目对话调用同一工具时省略 `root`，可咨询纯文字问题。绑定只在本地建立任务边界，不会发送内容到网页。无项目入口拒绝文件上下文，代码审查应在对应项目任务中进行。旧的 `setup --root /path/to/project` 仍可安装项目专用 MCP：它会预览拟加入项目 `.codex/config.toml` 的配置，仅在本地输入 `yes` 后写入，不更改 Codex 主模型或其他 MCP 配置。配置含本机绝对路径，不应提交；旧配置备份留在产品私有数据目录。
 
-Agent 浏览器模式由 Codex 的 Computer Use 操作用户已登录的 Chrome。运行任务的 Codex 环境需要提供该浏览器工具，并安装随包的 [Skill](skills/codex-pro-bridge/SKILL.md) 到个人 Codex 技能目录（本机为 `~/.codex/skills/codex-pro-bridge/`）。有限授权覆盖本次内容时，Codex 可以根据重大方案、复杂诊断或关键审查任务主动选择网页当前账号可用的最高高推理档位；普通小任务直接由 Codex 完成，不默认转到网页 Instant。当前 Bridge 高档路径不支持 Instant。Skill 核对账户、可见档位、发送标记和回答。已有登录可复用；每次咨询仍受项目、选定内容和有限授权约束。测试记录见下文。
+Agent 浏览器模式由 Codex 的 Computer Use 操作用户已登录的 Chrome。运行任务的 Codex 环境需要提供该浏览器工具，并安装随包的 [Skill](skills/codex-pro-bridge/SKILL.md) 到个人 Codex 技能目录（本机为 `~/.codex/skills/codex-pro-bridge/`）。用户选择使用后，Codex 核对网页当前账号可用的最高高推理档位；普通小任务直接由 Codex 完成，不默认转到网页 Instant。当前 Bridge 高档路径不支持 Instant。Skill 核对账户、可见档位、发送标记和回答。已有登录可复用；每次咨询仍受项目、选定内容和有限授权约束。使用选择由 Skill 与 MCP 提供给 Codex 的指令执行，运行器继续执行内容授权；它不是运行器新增的独立确认界面。测试记录见下文。
 
 **登录与账号边界：**新任务创建前必须在 Chrome 网页上看到已登录账号；未登录时停止，不创建待发送网页任务。Bridge 在本地保存此前绑定的网页账号标识哈希；若当前账号不同，绑定返回 `ACCOUNT_MISMATCH`，不会自动把问题发给另一个账号。用户明确要求改用当前账号时，才允许本次 `agent bind-route` 带 `account_switch_authorized:true`；旧授权会撤销，未发送任务会暂停。账号核对依赖页面可见标识，不独立验证后台账号身份。
 

@@ -10,7 +10,7 @@ import path from 'node:path';
 import { ensurePrivateDir, isProjectlessRoot, projectlessRoot } from '../state/paths.js';
 
 export async function serve(projectId:string|null) {
-  const server=new McpServer({name:'codex-pro-bridge',version:'0.1.0-alpha.1'},{instructions:'复杂任务可按当前网页账户实际可用的最高高推理档位协作；基础问题由 Codex 直接回答。页面显示 High 就标注 High，显示 6 Pro 才标注 6 Pro，不推断后台模型。有项目时绑定真实根目录；无项目纯文字对话省略 root。外发前须有本地单次批准或对应范围的有限授权。Agent 模式使用 Codex Computer Use 操作已登录的 Chrome，按 Skill 执行发送账本；暂停或提交未知时不得换 request_key 重发。'});
+  const server=new McpServer({name:'codex-pro-bridge',version:'0.1.0-alpha.1'},{instructions:'复杂任务可建议网页高推理协作，但先说明咨询问题、上下文、网页额度使用和等待，再让用户选择“Codex 直接处理（默认）”或“使用 Codex Pro Bridge”。明确同意前不调用 Bridge 工具、不准备快照、不读取 ChatGPT 浏览器、不创建任务；拒绝时本次直接处理且不反复询问，未回复不算同意。当前请求已明确要求使用，或用户批准了有范围和次数的协作流程时，在该范围内不重复询问；新的咨询和范围外网页追问重新选择。宿主免确认、有限外发授权或纯文字自动授权不代替使用选择，本机或项目暂停规则优先。基础问题由 Codex 直接回答。用户选择使用后按当前网页账户实际可用的最高高推理档位协作，页面显示 High 就标注 High，显示 6 Pro 才标注 6 Pro，不推断后台模型。有项目时绑定真实根目录；无项目纯文字对话省略 root。外发前仍须有本地单次批准或对应范围的有限授权。Agent 模式使用 Codex Computer Use 操作已登录的 Chrome，按 Skill 执行发送账本；暂停或提交未知时不得换 request_key 重发。'});
   let boundProjectId=projectId;
   let boundProjectless=false;
   const clientId=randomUUID();
