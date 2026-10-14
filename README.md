@@ -1,6 +1,23 @@
-# Codex Pro Bridge
+<h1 align="center">Codex Pro Bridge</h1>
 
-Codex 与 ChatGPT Chat 网页高推理档位的非官方协作桥。当前 `0.1.0-alpha.1` 是**实验开发版**。本地 MCP、任务和安装底座已在 Windows 11 原生环境通过离线测试与打包安装验收；Agent 浏览器模式已在 macOS 用户现有 Chrome 的 `6 Pro` 会话中完成新问题、同一对话追问和示例代码审查，三项回答都写回桥接任务。`High` 路由已通过离线集成测试，尚未在 Plus 账号真实网页验收。Windows 11 上的真实 Chrome 网页闭环与更广泛的网页异常场景仍待验收。
+<p align="center">
+  Codex 与 ChatGPT 网页高推理档位的按需协作桥。<br>
+  非官方实验项目 · 使用前由你选择
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-0.1.0--alpha.1-2563eb" alt="版本 0.1.0-alpha.1">
+  <img src="https://img.shields.io/badge/status-experimental-d97706" alt="实验开发版">
+  <img src="https://img.shields.io/badge/Node.js-24.16.0%2B-339933" alt="Node.js 24.16.0 或更新版本">
+</p>
+
+<p align="center">
+  <a href="#本地运行">快速开始</a> ·
+  <a href="skills/codex-pro-bridge/SKILL.md">Skill</a> ·
+  <a href="docs/VALIDATION.md">验证记录</a>
+</p>
+
+---
 
 ## 本地运行
 
@@ -40,6 +57,8 @@ Agent 浏览器模式由 Codex 的 Computer Use 操作用户已登录的 Chrome�
 `purge` 需要在本地交互终端输入确认词，会停止运行器并删除本产品的任务数据库、迁移备份与专用浏览器资料。它保留项目配置及网页聊天；下次调用仍可能重新创建本地数据。
 
 ## 验证
+
+本地 MCP、任务和安装底座已在 Windows 11 原生环境通过离线测试与打包安装验收；Agent 浏览器模式已在 macOS 用户现有 Chrome 的 `6 Pro` 会话中完成新问题、同一对话追问和示例代码审查，三项回答都写回桥接任务。`High` 路由已通过离线集成测试，尚未在 Plus 账号真实网页验收。Windows 11 上的真实 Chrome 网页闭环与更广泛的网页异常场景仍待验收。
 
 ```sh
 npm test
